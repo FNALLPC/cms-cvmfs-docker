@@ -12,7 +12,8 @@ ADD cvmfs/vnc_utils.sh /usr/local/vnc_utils.sh
 # Needed for centos, not Scientific Linux
 # RUN rpm -Uvh https://www.itzgeek.com/msttcore-fonts-2.0-3.noarch.rpm
 
-RUN yum install -y deltarpm \
+RUN for REPO in /etc/yum.repos.d/*; do sed -i 's~scientificlinux.org/linux/scientific/~scientificlinux.org/linux/scientific/obsolete/~g' $REPO; done \
+    && yum install -y deltarpm \
     && yum update -y \
     && yum --disablerepo="*" --enablerepo="repos" install -y epel-release \
     && yum repolist \
