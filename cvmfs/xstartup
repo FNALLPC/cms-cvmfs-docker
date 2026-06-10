@@ -8,6 +8,7 @@
 xsetroot -solid grey
 vncconfig -iconic &
 xterm -ls -title "$VNCDESKTOP Desktop" &
-fluxbox &
+export DBUS_SYSTEM_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS
+openbox-session &
 # Alternative windows managers
 # twm, blackbox

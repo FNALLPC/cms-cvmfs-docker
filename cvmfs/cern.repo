@@ -1,7 +1,5 @@
 [cern]
-name=CentOS-7 - CERN
-baseurl=http://linuxsoft.cern.ch/cern/centos/7/cern/x86_64
+name=Alma9 - CERN
+baseurl=http://linuxsoft.cern.ch/cern/alma/9/CERN/x86_64/
 enabled=1
 gpgcheck=0
-exclude=golang,golang-*,aims2-client,libxerces-c-3_1,python-logilab-*,cvmfs,puppet,puppet-server,facter,mcollective*,hiera,puppet-agent,puppet-agent-extra-gems
-includepkgs=

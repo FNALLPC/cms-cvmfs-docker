@@ -20,7 +20,7 @@ else
         fi
     else
         echo -e "DONE\n\tAt least one CVMFS folders is not mounted. Will automatically retry the CVMFS mounts."
-        source /mount_cvmfs.sh
+        source /home/cmsusr/mount_cvmfs.sh
         mount_cvmfs
     fi
 fi
@@ -44,4 +44,4 @@ fi
 export XrdSecGSISRVNAMES="cmseos.fnal.gov"
 
 # Get access to the VNC helper function
-source /usr/local/vnc_utils.sh
+source /home/cmsusr/vnc_utils.sh

@@ -16,7 +16,7 @@ This project was setup to allow local access to the CernVM File System (CernVM-F
 
 Branch|Build|Image Size|Pulls|Docker Hub
 ---|---|---|---|---
-latest | [![Docker Build Status](https://github.com/aperloff/cms-cvmfs-docker/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/aperloff/cms-cvmfs-docker/actions/workflows/docker-publish.yml) | [![Docker Image Size](https://img.shields.io/docker/image-size/aperloff/cms-cvmfs-docker?sort=semver)](https://hub.docker.com/r/aperloff/cms-cvmfs-docker "Click to view the image on Docker Hub") | [![](https://img.shields.io/docker/pulls/aperloff/cms-cvmfs-docker.svg)](https://img.shields.io/docker/pulls/aperloff/cms-cvmfs-docker.svg) | [cms-cvmfs-docker](https://hub.docker.com/r/aperloff/cms-cvmfs-docker/)
+latest | [![Docker Build Status](https://github.com/FNALLPC/cms-cvmfs-docker/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/FNALLPC/cms-cvmfs-docker/actions/workflows/docker-publish.yml) | [![Docker Image Size](https://img.shields.io/docker/image-size/FNALLPC/cms-cvmfs-docker?sort=semver)](https://hub.docker.com/r/FNALLPC/cms-cvmfs-docker "Click to view the image on Docker Hub") | [![](https://img.shields.io/docker/pulls/FNALLPC/cms-cvmfs-docker.svg)](https://img.shields.io/docker/pulls/FNALLPC/cms-cvmfs-docker.svg) | [cms-cvmfs-docker](https://hub.docker.com/r/FNALLPC/cms-cvmfs-docker/)
 
 --------------------------------------------
 ## Setting up the Docker image
@@ -40,7 +40,7 @@ The name and tag choice are up to you.
 
 If you would rather not build the image yourself, you can always check it out (pull) from DockerHub.
 ```
-docker pull aperloff/cms-cvmfs-docker[:tag]
+docker pull fnallpc/cms-cvmfs-docker[:tag]
 ```
 
 The number of tags varies from time to time based on the current number of branches in GitHub. There will always be a `latest` tag, which is built from the master branch.
@@ -54,7 +54,7 @@ To run the container use a command similar to:
 ```bash
 docker run -it -P --device /dev/fuse --cap-add SYS_ADMIN -e DISPLAY=host.docker.internal:0 <name>[:<tag>]
 ```
-where the name and tag will be dependent on if your accessing a local image or the pre-built from DockerHub. For information about the name and tag choices, see the previous section on setting up the image.
+where the name and tag depend on whether you're accessing a local image or the pre-built from DockerHub. For information about the name and tag choices, see the previous section on setting up the image.
 
 You may also customize the run command with some additional options. These options and their effect are described below:
 - If you would like the container to be removed immediately upon exiting the container, simply add `--rm` to the command.
@@ -68,6 +68,8 @@ You may also customize the run command with some additional options. These optio
    - cms-opendata-conddb.cern.ch
    - ilc.desy.de
    - unpacked.cern.ch
+   - muoncollider.cern.ch
+   - sw.hsf.org
 - To access a grid certificate on the host computer you will need to not only mount the directory containing the certificate files, but also map the host user's UID and GID to that of the remote user. To do this you will need to append the commands: `-e MY_UID=$(id -u) -e MY_GID=$(id -g) -v ~/.globus:/home/cmsusr/.globus`. Though technically the local `.globus` folder doesn't need to be in the local users home area.
 - To mount other local folders, simply add `-v <path to local folder>:<path to remote folder>`.
 - To name the container, add the `--name <name>` option. If you don't name the container, Docker will assign a random string name to the container. You can find the name of the container by entering the command `docker ps -a` on the host computer.
@@ -75,7 +77,7 @@ You may also customize the run command with some additional options. These optio
 
 A full command may look something like:
 ```bash
-docker run --rm -it -P -p 5901:5901 -p 6080:6080 --device /dev/fuse --cap-add SYS_ADMIN -e CVMFS_MOUNTS="cms.cern.ch oasis.opensciencegrid.org" -e DISPLAY=host.docker.internal:0 -e MY_UID=$(id -u) -e MY_GID=$(id -g) -v ~/.globus:/home/cmsusr/.globus aperloff/cms-cvmfs-docker:latest
+docker run --rm -it -P -p 5901:5901 -p 6080:6080 --device /dev/fuse --cap-add SYS_ADMIN -e CVMFS_MOUNTS="cms.cern.ch oasis.opensciencegrid.org" -e DISPLAY=host.docker.internal:0 -e MY_UID=$(id -u) -e MY_GID=$(id -g) -v ~/.globus:/home/cmsusr/.globus fnallpc/cms-cvmfs-docker:latest
 ```
 
 **Note:** On certain Linux distributions (i.e. Ubuntu) you will need to turn off `apparmor` in order for CVMFS to be mounted successfully. Simply add the option `--security-opt apparmor:unconfined` to your `docker run` command.
@@ -98,7 +100,7 @@ docker start <container name>
 
 You may need to remount the CVMFS folders by running the command:
 ```bash
-~/run.sh
+/run.sh
 ```
 
 ### Removing a container
@@ -119,9 +121,9 @@ The starting path will be `/`. Without the `-i` command the shell will start wit
 
 ### Running a shell script upon startup (will not be interactive)
 
-If all you'd like to do is run a single shell script or command within bash, you may pass this as the docker run "[COMMAND] [ARG...]" options. This will, in fact, be gobbled up by the `su` command in the run.sh script which started the bash shell owned by the cmsusr user. In order to run a command, use the syntax:
+If all you'd like to do is run a single shell script or command within bash, you may pass this as the docker run "[COMMAND] [ARG...]" options. This will, in fact, be gobbled up by the `su` command in the `run.sh` script which started the bash shell owned by the cmsusr user. In order to run a command, use the syntax:
 ```bash
-docker run <options> aperloff/cms-cvmfs-docker:latest -c <command>
+docker run <options> fnallpc/cms-cvmfs-docker:latest -c <command>
 ```
 where all of the docker run options have been omitted for clarity. You may run multiple commands if they are separated by `&&` and surrounded by quotes. For example:
 ```bash
@@ -129,7 +131,7 @@ where all of the docker run options have been omitted for clarity. You may run m
 ```
 The `-c` option is passed to `su` and tells it to run the command once the shell has started up. If instead you would like to run a shell script with arguments, simply use:
 ```bash
-docker run <options> aperloff/cms-cvmfs-docker:latest <script> <arguments>
+docker run <options> fnallpc/cms-cvmfs-docker:latest <script> <arguments>
 ```
 Please note, you cannot run multiple shell scripts as all of the scripts will be passed as arguments to the first script.
 
@@ -167,7 +169,7 @@ The options to allow X11 windows to be transmitted to the host are different for
 
 #### Special instructions for OSX users
 
-Once XQuarts is installed, start the program and navigate to XQuartz -> Preferences -> Security. Make sure that both the “Authenticate connections” and “Allow connections from network clients” checkboxes are selected. If you change any settings, you will need to restart XQuartz.
+Once XQuartz is installed, start the program and navigate to XQuartz -> Preferences -> Security. Make sure that both the “Authenticate connections” and “Allow connections from network clients” checkboxes are selected. If you change any settings, you will need to restart XQuartz.
 
 --------------------------------------------
 ## What can I do with this?

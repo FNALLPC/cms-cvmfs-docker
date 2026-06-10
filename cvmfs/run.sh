@@ -27,8 +27,7 @@ usermod -u $MY_UID -g $MY_GID --non-unique cmsusr > /dev/null 2>&1
 chown -R $MY_UID:$MY_GID /home/cmsusr
 
 # Mount the CVMFS directories
-source /mount_cvmfs.sh
+source /home/cmsusr/mount_cvmfs.sh
 mount_cvmfs
 
-#trap : TERM INT; sleep infinity & wait
 su cmsusr -s /bin/bash "$@"
